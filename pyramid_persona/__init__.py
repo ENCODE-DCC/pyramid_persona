@@ -19,7 +19,8 @@ def includeme(config):
         * Setup default authentication and authorization policies, and a default session factory.
           Keep in mind that the sessions are not encrypted, if you need to store secret information in it, please
           override the session factory.
-        * Add two request attributes :
+        * remove csrf predicate
+        * Remove two request attributes :
             * persona_js, the javascript code to inclue on a page to make persona work.
             * persona_button, the html for a default login/logout button.
         * Set login and logout views for use with persona.
@@ -71,26 +72,26 @@ def includeme(config):
             request_params[option] = settings[setting_name]
     config.registry['persona.request_params'] = json.dumps(request_params)
 
-    # Login and logout views.
+    # Login and logout views - removed csrf
     login_route = settings.get('persona.login_route', 'login')
     config.registry['persona.login_route'] = login_route
     login_path = settings.get('persona.login_path', '/login')
     config.add_route(login_route, login_path)
-    config.add_view(login, route_name=login_route, check_csrf=True,
+    config.add_view(login, route_name=login_route,
                     permission=NO_PERMISSION_REQUIRED)
 
     logout_route = settings.get('persona.logout_route', 'logout')
     config.registry['persona.logout_route'] = logout_route
     logout_path = settings.get('persona.logout_path', '/logout')
     config.add_route(logout_route, logout_path)
-    config.add_view(logout, route_name=logout_route, check_csrf=True,
+    config.add_view(logout, route_name=logout_route,
                     permission=NO_PERMISSION_REQUIRED)
 
     # A simple 403 view, with a login button.
     config.add_forbidden_view(forbidden)
 
     # A quick access to the login button
-    config.add_request_method(button, 'persona_button', reify=True)
+    #config.add_request_method(button, 'persona_button', reify=True)
 
     # The javascript needed by persona
-    config.add_request_method(js, 'persona_js', reify=True)
+    #config.add_request_method(js, 'persona_js', reify=True)
